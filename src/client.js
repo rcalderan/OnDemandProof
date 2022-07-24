@@ -1,22 +1,16 @@
 const host = 'http://127.0.0.1:3000/';
 
-const database = async () => Array.from({
-    length:1000
-}, (v,index)=>{ `${index}-data`
+const numberOfRequests=1000;
 
-});
-
-async function processData(){
-    const data =await database();
-    const responses =[];
-
-    for(const item of data){
-        const info = await (await fetch(host,{method:'GET'})).json();
-
-        responses.push(info);
+//the * is the simbol that makes the functions be an Generator. Its stops to "return", and user behave like an interator using yeld instead
+async function * processData(){
+    for(let i=1;i<=numberOfRequests; i++){
+        console.log(`Request mumber: ${i}`);
+        const info = await (await fetch(host,{method:'GET'})).text();
+        yield info;
     }
-    return responses;
-
 }
 
-console.table( await processData());
+for await (const data of processData()){
+    console.table( data );
+}

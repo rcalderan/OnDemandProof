@@ -4,11 +4,14 @@ import { parse } from 'url'
  
 const port = 3000;
 
+let count = 0;
+
 async function handler(request, response) {
     
     setTimeout(async ()=>{//simulates a delayed response.
         if(request.method ==='GET'){
-            console.log('requested!');
+            count++;
+            console.log(`Request ${count}`);
             const {query:{name}} =parse(request.url,true);
             const item = {
                 id: randomUUID()
@@ -16,7 +19,7 @@ async function handler(request, response) {
             return response.end(JSON.stringify(item));
         }
         return response.end('OK!');            
-    },500);
+    },(Math.random()*100));
 }
 
 createServer(handler)
